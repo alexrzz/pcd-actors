@@ -37,6 +37,9 @@
  */
 package it.unipd.math.pcd.actors;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Defines common properties of all actors.
  *
@@ -45,6 +48,8 @@ package it.unipd.math.pcd.actors;
  * @since 1.0
  */
 public abstract class AbsActor<T extends Message> implements Actor<T> {
+
+    private final ExecutorService exService = Executors.newSingleThreadExecutor();
 
     /**
      * Self-reference of the actor
@@ -65,5 +70,20 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     protected final Actor<T> setSelf(ActorRef<T> self) {
         this.self = self;
         return this;
+    }
+
+    protected final void setSender(ActorRef<T> sender) {
+        this.sender = sender;
+    }
+
+    protected final void acceptMessage(final Couple<T, ActorRef<T>> couple) {
+        exService.execute(new Runnable() {
+            @Override
+            public void run() {
+                setSender(couple.getSender());
+                //TODO eccezione UnsupportedMessageException
+                receive(couple.getMessage());
+            }
+        });
     }
 }

@@ -4,7 +4,17 @@ package it.unipd.math.pcd.actors;
  * Created by Alex on 26/01/2016.
  * it.unipd.math.pcd.actors
  */
-public class ConcreteActorSystem extends AbsActorSystem {
+public final class ConcreteActorSystem extends AbsActorSystem {
+
+
+    private static ConcreteActorSystem instance = null;
+    protected ConcreteActorSystem() {}
+    public static ConcreteActorSystem getInstance() {
+        if(instance == null) {
+            instance = new ConcreteActorSystem();
+        }
+        return instance;
+    }
 
     @Override
     protected ActorRef createActorReference(ActorMode mode) {
