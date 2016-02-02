@@ -8,12 +8,7 @@ public class LocalActorRef<T extends Message> implements ActorRef<T> {
 
     @Override
     public void send(T message, ActorRef to) {
-        //this è l'attore che manda il messaggio
-        //costruisco la coppia Messaggio, Mittente
         Couple couple = new Couple<T, ActorRef<T>>(message, this);
-        //otteniamo l'istanza dell'actorsystem
-        //otteniamo l'attore corrispondente a "to"
-        //mettiamo il msg nella mailbox con acceptMessage()
         ((ConcreteActorSystem.getInstance()).getCorrespondingActor(to)).acceptMessage(couple);
     }
 
