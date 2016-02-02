@@ -37,12 +37,14 @@
  */
 package it.unipd.math.pcd.actors;
 
+import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 import it.unipd.math.pcd.actors.utils.ActorSystemFactory;
 import it.unipd.math.pcd.actors.utils.actors.TrivialActor;
 import it.unipd.math.pcd.actors.utils.actors.counter.CounterActor;
 import it.unipd.math.pcd.actors.utils.actors.ping.pong.PingPongActor;
 import it.unipd.math.pcd.actors.utils.actors.StoreActor;
 import it.unipd.math.pcd.actors.utils.messages.StoreMessage;
+import it.unipd.math.pcd.actors.utils.messages.counter.Decrement;
 import it.unipd.math.pcd.actors.utils.messages.counter.Increment;
 import it.unipd.math.pcd.actors.utils.messages.ping.pong.PingMessage;
 import org.junit.Assert;
@@ -101,14 +103,16 @@ public class ActorITTest {
     @Test
     public void shouldNotLooseAnyMessage() throws InterruptedException {
         TestActorRef counter = new TestActorRef(system.actorOf(CounterActor.class));
+        TestActorRef adder = new TestActorRef(system.actorOf(TrivialActor.class));
         for (int i = 0; i < 200; i++) {
-            TestActorRef adder = new TestActorRef(system.actorOf(TrivialActor.class));
             adder.send(new Increment(), counter);
         }
+        adder.send(new Decrement(), counter);
 
         Thread.sleep(2000);
 
         Assert.assertEquals("A counter that was incremented 1000 times should be equal to 1000",
-                200, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
+                199, ((CounterActor) counter.getUnderlyingActor(system)).getCounter());
     }
+
 }

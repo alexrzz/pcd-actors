@@ -85,6 +85,14 @@ public abstract class AbsActorSystem implements ActorSystem {
         return this.actorOf(actor, ActorMode.LOCAL);
     }
 
+    /**
+     * Returns the Actor corresponding to the ActorRef parameter
+     *
+     * @param actorRef The ActorRef about which the corresponding Actor has to be returned
+     * @return The Actor
+     * @throws it.unipd.math.pcd.actors.exceptions.NoSuchActorException If there's no Actor corresponding
+     * to the argument
+     */
     protected AbsActor<?> getCorrespondingActor(ActorRef<?> actorRef) {
         if (actors.containsKey(actorRef))
             return (AbsActor<?>) actors.get(actorRef);
@@ -92,19 +100,30 @@ public abstract class AbsActorSystem implements ActorSystem {
             throw new NoSuchActorException();
     }
 
+    /**
+     * Returns all the actors contained in actors map
+     *
+     * @return A Collection view of the values contained in the actors map
+     */
     protected Collection<Actor<?>> getAllActors() {
         return actors.values();
     }
 
+    /**
+     * Removes the actorRef key and the corresponding Actor value from the actors map
+     * @param actorRef The key that needs to be removed
+     */
     protected void removeActor(ActorRef<?> actorRef) {
         actors.remove(actorRef);
     }
 
-   /* protected void removeAllActors() {
-        actors.clear();
-    } */
-
+    /**
+     * Creates an ActorRef of the mode type
+     *
+     * @param mode The mode of the actor
+     * @return An ActorRef of the specified mode
+     * @throws IllegalArgumentException If the mode argument is invalid
+     */
     protected abstract ActorRef createActorReference(ActorMode mode);
-
 
 }

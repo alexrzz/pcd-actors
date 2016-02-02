@@ -8,12 +8,20 @@ import java.util.Collection;
  */
 public final class ConcreteActorSystem extends AbsActorSystem {
 
+    /**
+     * Unique instance of the ConcreteActorSystem
+     */
     private static ConcreteActorSystem instance = null;
 
     public ConcreteActorSystem() {
         instance = this;
     }
 
+    /**
+     * Factory method to obtain the unique instance
+     *
+     * @return The unique ConcreteActorSystem's instance
+     */
     public static ConcreteActorSystem getInstance() {
         if(instance == null) {
             instance = new ConcreteActorSystem();

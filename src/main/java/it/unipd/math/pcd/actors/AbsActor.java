@@ -50,6 +50,9 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbsActor<T extends Message> implements Actor<T> {
 
+    /**
+     * The mailbox mechanism
+     */
     private final ExecutorService exService = Executors.newSingleThreadExecutor();
 
     /**
@@ -63,7 +66,7 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
     protected ActorRef<T> sender;
 
     /**
-     * Sets the self-referece.
+     * Sets the self-reference.
      *
      * @param self The reference to itself
      * @return The actor.
@@ -73,23 +76,36 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         return this;
     }
 
+    /**
+     * Shutdowns the Actor.
+     */
     protected final void shutdownActor() {
         exService.shutdown();
         try {
             if(!exService.awaitTermination(120, TimeUnit.SECONDS))
                 exService.shutdownNow();
-            if(!exService.awaitTermination(120, TimeUnit.SECONDS))
-                System.err.println("Pool did not terminate");
+            if(!exService.awaitTermination(60, TimeUnit.SECONDS))
+                System.err.println("Actor did not terminate after 3 minutes, use the force Luke!");
         } catch (InterruptedException e) {
             exService.shutdownNow();
             Thread.currentThread().interrupt();
         }
     }
 
+    /**
+     * Sets the sender of the current message
+     *
+     * @param sender The sender of the current message
+     */
     protected final void setSender(ActorRef<T> sender) {
         this.sender = sender;
     }
 
+    /**
+     * Accepts an incoming message and queues it for elaboration
+     *
+     * @param couple The couple formed of a Message and the Message's sender
+     */
     protected final void acceptMessage(final Couple<T, ActorRef<T>> couple) {
         exService.execute(new Runnable() {
             @Override
