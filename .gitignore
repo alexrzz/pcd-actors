@@ -1,1 +1,5 @@
 *.class
+*.jar
+*.iml
+*.iws
+*.ipr
