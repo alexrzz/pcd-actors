@@ -39,6 +39,7 @@ package it.unipd.math.pcd.actors;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Defines common properties of all actors.
@@ -72,6 +73,19 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
         return this;
     }
 
+    protected final void shutdownActor() {
+        exService.shutdown();
+        try {
+            if(!exService.awaitTermination(120, TimeUnit.SECONDS))
+                exService.shutdownNow();
+            if(!exService.awaitTermination(120, TimeUnit.SECONDS))
+                System.err.println("Pool did not terminate");
+        } catch (InterruptedException e) {
+            exService.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
     protected final void setSender(ActorRef<T> sender) {
         this.sender = sender;
     }
@@ -81,9 +95,9 @@ public abstract class AbsActor<T extends Message> implements Actor<T> {
             @Override
             public void run() {
                 setSender(couple.getSender());
-                //TODO eccezione UnsupportedMessageException
                 receive(couple.getMessage());
             }
         });
     }
+
 }

@@ -4,17 +4,17 @@ package it.unipd.math.pcd.actors;
  * Created by Alex on 29/01/2016.
  * it.unipd.math.pcd.actors
  */
-public class Couple<M extends Message, A extends ActorRef<M>> {
-    private M message;
+public class Couple<T extends Message, A extends ActorRef<T>> {
+    private T message;
     private A sender;
-    public Couple(M message, A sender){
+    public Couple(T message, A sender){
         this.message = message;
         this.sender = sender;
     }
-    protected M getMessage() {
+    protected T getMessage() {
         return message;
     }
-    protected ActorRef<M> getSender() {
+    protected ActorRef<T> getSender() {
         return sender;
     }
 }

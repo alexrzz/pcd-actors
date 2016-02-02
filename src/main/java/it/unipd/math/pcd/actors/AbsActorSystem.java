@@ -39,6 +39,7 @@ package it.unipd.math.pcd.actors;
 
 import it.unipd.math.pcd.actors.exceptions.NoSuchActorException;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -84,9 +85,26 @@ public abstract class AbsActorSystem implements ActorSystem {
         return this.actorOf(actor, ActorMode.LOCAL);
     }
 
+    protected AbsActor<?> getCorrespondingActor(ActorRef<?> actorRef) {
+        if (actors.containsKey(actorRef))
+            return (AbsActor<?>) actors.get(actorRef);
+        else
+            throw new NoSuchActorException();
+    }
+
+    protected Collection<Actor<?>> getAllActors() {
+        return actors.values();
+    }
+
+    protected void removeActor(ActorRef<?> actorRef) {
+        actors.remove(actorRef);
+    }
+
+   /* protected void removeAllActors() {
+        actors.clear();
+    } */
+
     protected abstract ActorRef createActorReference(ActorMode mode);
 
-    protected AbsActor<?> whoIs(ActorRef<?> actorRef) {
-        return (AbsActor<?>) actors.get(actorRef);
-    }
+
 }

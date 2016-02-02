@@ -4,17 +4,17 @@ package it.unipd.math.pcd.actors;
  * Created by Alex on 26/01/2016.
  * it.unipd.math.pcd.actors
  */
-public class LocalActorRef implements ActorRef<Message> {
+public class LocalActorRef<T extends Message> implements ActorRef<T> {
 
     @Override
-    public void send(Message message, ActorRef to) {
+    public void send(T message, ActorRef to) {
         //this è l'attore che manda il messaggio
         //costruisco la coppia Messaggio, Mittente
-        Couple couple = new Couple<Message, ActorRef<Message>>(message, this);
+        Couple couple = new Couple<T, ActorRef<T>>(message, this);
         //otteniamo l'istanza dell'actorsystem
         //otteniamo l'attore corrispondente a "to"
         //mettiamo il msg nella mailbox con acceptMessage()
-        ((ConcreteActorSystem.getInstance()).whoIs(to)).acceptMessage(couple);
+        ((ConcreteActorSystem.getInstance()).getCorrespondingActor(to)).acceptMessage(couple);
     }
 
     @Override
